@@ -1,6 +1,21 @@
 package com.jonblack.controllers;
 
+import com.jonblack.entities.User;
+import com.jonblack.services.RestaurantRepository;
+import com.jonblack.services.UserRepository;
+import com.jonblack.utilities.PasswordStorage;
+import org.h2.tools.Server;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 
 /**
  * Created by jonathandavidblack on 10/3/16.
@@ -8,4 +23,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RestaurantGraveyardRestController {
 
+    @Autowired
+    UserRepository users;
+
+    @Autowired
+    RestaurantRepository restaurants;
+
+    @PostConstruct
+    public void init() throws SQLException {
+        Server.createWebServer("-webPort", "1777").start();
+
+
+    }
+
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    public ResponseEntity login(@RequestBody User user, HttpSession session) throws Exception {
+        User userFromDatabase = users.findFirstByUsername(user.getUsername());
+
+        if (userFromDatabase == null) {
+            user.setPassword(PasswordStorage.createHash(user.getPassword()));
+            user.setUsername(user.getUsername());
+            users.save(user);
+        }
+        else if (!PasswordStorage.verifyPassword(user.getPassword(), userFromDatabase.getPassword())) {
+            return new ResponseEntity<>("BAD PASS", HttpStatus.FORBIDDEN);
+        }
+
+        session.setAttribute("username", user.getUsername());
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 }
