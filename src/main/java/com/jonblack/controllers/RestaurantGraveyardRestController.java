@@ -9,6 +9,7 @@ import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,12 @@ public class RestaurantGraveyardRestController {
         Server.createWebServer("-webPort", "1777").start();
 
 
+    }
+
+    @RequestMapping(path="/", method = RequestMethod.GET)
+    public String home(HttpSession session, Model model, Integer itemToEdit, Integer id) {
+
+        return "index";
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
