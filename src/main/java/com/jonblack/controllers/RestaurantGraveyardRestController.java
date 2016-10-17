@@ -61,6 +61,18 @@ public class RestaurantGraveyardRestController {
         ArrayList<Restaurant> allRestaurants = (ArrayList<Restaurant>) restaurants.findAll();
         return new ResponseEntity<> (allRestaurants, HttpStatus.ACCEPTED);
     }
+    @RequestMapping(path = "/addRestaurant", method = RequestMethod.POST)
+    public ResponseEntity<Restaurant> addRestaurantToMap(@RequestBody Restaurant restaurant, HttpSession session) {
+        Restaurant rest = new Restaurant();
+
+        rest.setAddress(restaurant.getAddress());
+        rest.setId(restaurant.getId());
+        rest.setRestaurantName(restaurant.getRestaurantName());
+
+        restaurants.save(rest);
+
+        return new ResponseEntity<>(rest, HttpStatus.ACCEPTED);
+    }
 
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
     public ResponseEntity logout(HttpSession session) {
