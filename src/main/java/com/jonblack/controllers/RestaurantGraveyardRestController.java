@@ -1,5 +1,6 @@
 package com.jonblack.controllers;
 
+import com.jonblack.entities.Restaurant;
 import com.jonblack.entities.User;
 import com.jonblack.services.RestaurantRepository;
 import com.jonblack.services.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * Created by jonathandavidblack on 10/3/16.
@@ -53,4 +55,11 @@ public class RestaurantGraveyardRestController {
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
+    @RequestMapping(path = "/restaurants", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<Restaurant>> displayRestaurants(/* not sure what I need*/ HttpSession session) {
+        ArrayList<Restaurant> allRestaurants = (ArrayList<Restaurant>) restaurants.findAll();
+        return new ResponseEntity<> (allRestaurants, HttpStatus.ACCEPTED);
+    }
+
 }
