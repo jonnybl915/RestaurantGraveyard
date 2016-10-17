@@ -62,4 +62,11 @@ public class RestaurantGraveyardRestController {
         return new ResponseEntity<> (allRestaurants, HttpStatus.ACCEPTED);
     }
 
+    @RequestMapping(path = "/logout", method = RequestMethod.POST)
+    public ResponseEntity logout(HttpSession session) {
+        session.invalidate();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
